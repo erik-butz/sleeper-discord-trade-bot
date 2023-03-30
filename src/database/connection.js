@@ -4,16 +4,16 @@ let db;
 
 const mongoDbEnvHelper = () => {
     switch (process.env.NODE_ENV) {
-    case 'local':
-    case 'development':
-        console.log('Local/Dev Mongodb Env');
-        return 'mongodb://localhost:27017';
-    case 'production':
-        console.log('Prod Mongodb Env');
-        return `mongodb+srv://${process.env.MongoDbUser}:${process.env.MongoDbPw}@${process.env.MongoDbCollection}`;
-    default:
-        console.log('Default Mongodb Env');
-        return `mongodb+srv://${process.env.MongoDbUser}:${process.env.MongoDbPw}@${process.env.MongoDbCollection}`;
+        case 'local':
+        case 'development':
+            console.log('Local/Dev Mongodb Env');
+            return 'mongodb://localhost:27017';
+        case 'production':
+            console.log('Prod Mongodb Env');
+            return `mongodb+srv://${process.env.MongoDbUser}:${process.env.MongoDbPw}@${process.env.MongoDbCollection}`;
+        default:
+            console.log('Default Mongodb Env');
+            return `mongodb+srv://${process.env.MongoDbUser}:${process.env.MongoDbPw}@${process.env.MongoDbCollection}`;
     }
 };
 
@@ -32,11 +32,10 @@ const connectToDb = async () => {
     } catch (err) {
         console.log(err);
     }
-      
-    
-    async function listDatabases(client){
+
+    async function listDatabases(client) {
         let databasesList = await client.db().admin().listDatabases();
-   
+
         console.log('Databases:');
         databasesList.databases.forEach(db => console.log(` - ${db.name}`));
     }

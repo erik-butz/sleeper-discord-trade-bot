@@ -11,14 +11,14 @@ app.use(express.json());
 app.use(cors());
 
 const main = async () => {
-//Set up Discord bot Connection
-    await BotConnection.loginToBot();
+    //Set up Discord bot Connection
+    BotConnection.loginToBot();
 
     //Connect to MongoDb
     await MongoDbConnection.connectToDb();
-    // let db = await MongoDbConnection.getDb();
-    // console.log(await db.collection('AOBB.Trade'));
+    let db = await MongoDbConnection.getDb();
 
+    console.log(await db.collection('LeagueUsers'));
     await app.use('/setUpAobbUsers', setUpAobbUsers);
 
     // allRosterUsers.fetchUserData();
