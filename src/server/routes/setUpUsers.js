@@ -4,7 +4,6 @@ const axios = require('axios');
 const MongoDbConnection = require('../../database/connection');
 require('dotenv').config();
 
-
 router.get('/', (_req, res) => {
     console.log('Inside Setup AOBB Users Endpoint');
     fetchUserData(res);
@@ -30,7 +29,7 @@ const fetchUserData = async (res) => {
     await axios
         .get('https://api.sleeper.app/v1/league/919431908273004544/rosters')
         .then(({data})=> {
-            for (let j = 1; j < Object.keys(data).length; j++) {
+            for (let j = 0; j < Object.keys(data).length; j++) {
                 const ownerIdToFetch = data[j].owner_id;
                 const userToUpdate = users.get(ownerIdToFetch);
                 userToUpdate.roster_id = data[j].roster_id;
@@ -39,28 +38,36 @@ const fetchUserData = async (res) => {
             }
             console.log(users);
         });
+
     return res.status(200).json({message: 'Successfully setup AOBB users'});
 };
 
 const insertUserIntoMongoDbDatabase = async (user) => {
-    console.log('inside insertUserIntoMongoDbDatabase');
-    let leagueUsers;
+    const db = await MongoDbConnection.getDb();
     const collectionName = 'LeagueUsers';
+    const leagueUsers = await db.collection(collectionName);
+
     let query = {
-        full_name: user.user_id
+        _id: `${user.owner_id}`
+    };
+
+    let dbUser = {
+        $set: {
+            _id: `${user.owner_id}`,
+            owner_id:  `${user.owner_id}`,
+            display_name: `${user.display_name}`,
+            roster_id: user.roster_id
+        }
     };
 
     try {
-        const db = MongoDbConnection.getDb();
-        console.log(`DB>>>>>>>>>>>>>>>>>>>>>> ${db}`);
-        leagueUsers = await db.collection(collectionName);
-        leagueUsers.updateOne(
+        console.log(await leagueUsers.updateOne(
             query,
-            user,
+            dbUser,
             {
                 upsert: true
             }
-        );
+        ));
     } catch (err) {
         console.log(err);
     }

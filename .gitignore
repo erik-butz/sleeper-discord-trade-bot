@@ -29,7 +29,3 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
-
-# Esling
-.eslintrc.js
-.eslintrc.json
