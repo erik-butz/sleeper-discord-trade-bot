@@ -18,3 +18,6 @@ Discord Bot polling/waiting for change in DB
 https://discord.com/api/oauth2/authorize?client_id=844035419091501096&permissions=0&scope=bot%20applications.commands
 Fantasty Calc Player Values
 https://api.fantasycalc.com/values/current?isDynasty=true&numQbs=2&numTeams=12&ppr=.5
+
+Node Canvas for generating the trade image to post to discord
+https://github.com/Automattic/node-canvas
