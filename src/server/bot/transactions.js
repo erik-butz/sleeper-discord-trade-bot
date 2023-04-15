@@ -3,11 +3,6 @@ const axios = require('axios');
 const botSendingMessage = require('../bot/botSendingMessage');
 require('dotenv').config();
 
-
-// const db = await MongoDbConnection.getDb();
-// const collectionName = 'Trade';
-// const tradeCollection = await db.collection(collectionName);
-
 const transactionUrl = 'https://api.sleeper.app/v1/league/919431908273004544/transactions/1';
 
 //This function calls sleeper api for transactions for our league and inserts them into a mongodb cloud db. It loops through each item in the returned json response
@@ -18,7 +13,9 @@ const fetchAllTransactions = async () => {
         .then(({data}) => {
             for (let i = 0; i < Object.keys(data).length; i++) {
                 //Insert Each Transaction here
+                //For optimization we want to break out of the loop when we find the first record in the db. That means we are through the new transactions
                 const breakOutOfLoop = insertTransactionToDb(data[i]);
+                
                 if (breakOutOfLoop === true) {
                     break;
                 }
@@ -103,7 +100,7 @@ const insertTransactionToDb = async (transaction) => {
 
         if (dbResponse.upsertedCount === 1) {
             console.log('Record not found, sending message to trades channel!');
-            botSendingMessage.sendTradeMessage('Trade', JSON.stringify(transaction));
+            botSendingMessage.sendTradeMessage('Trade', transaction);
             return true;
         } else if (dbResponse.matchedCount === 1) {
             console.log(`Transaction ${transaction.transaction_id} already in Database`);
@@ -111,20 +108,6 @@ const insertTransactionToDb = async (transaction) => {
         }
     } catch (err) {
         console.log(err);
-    }
-};
-
-//Helper function to return one of the 3 collections in the mongodb database
-const getCollectionName = (transactionType) =>{
-    switch (transactionType) {    
-    case 'trade':
-        return 'Trade';
-    case 'waiver':
-        return 'Waiver';
-    case 'free_agent':
-        return 'Free_agent';
-    default:
-        break;
     }
 };
 
