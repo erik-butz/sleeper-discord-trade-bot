@@ -23,6 +23,6 @@ app.use('/botTestMessage', botTestMessage);
 // allRosterUsers.fetchUserData();
 app.listen(port, () => console.log(`Server Ready and Running on port ${port}`));
 
-setInterval(() => {
-    pollForTransactions.fetchAllTransactions();
-},10000);
+// setInterval(() => {
+//     pollForTransactions.fetchAllTransactions();
+// },10000);
