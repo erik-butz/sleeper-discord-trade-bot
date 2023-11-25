@@ -10,12 +10,12 @@ const transactionUrl = 'https://api.sleeper.app/v1/league/919431908273004544/tra
 const fetchAllTransactions = async () => {
     await axios
         .get(transactionUrl)
-        .then(({data}) => {
+        .then(({ data }) => {
             for (let i = 0; i < Object.keys(data).length; i++) {
                 //Insert Each Transaction here
                 //For optimization we want to break out of the loop when we find the first record in the db. That means we are through the new transactions
                 const breakOutOfLoop = insertTransactionToDb(data[i]);
-                
+
                 if (breakOutOfLoop === true) {
                     break;
                 }
@@ -97,7 +97,7 @@ const insertTransactionToDb = async (transaction) => {
                 upsert: true
             }
         );
-
+        //upsertedCount of 1 means the record was updates or a new record transaction
         if (dbResponse.upsertedCount === 1) {
             console.log('Record not found, sending message to trades channel!');
             botSendingMessage.sendTradeMessage('Trade', transaction);
